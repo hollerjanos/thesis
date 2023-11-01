@@ -6,8 +6,8 @@
 
 // Creator: Holler Janos
 // First release: 2023-10-30 19:24:00
-// Latest update: 2023-10-30 19:24:00
-// Editor: Visual Studio Code
+// Latest update: 2023-11-01 11:35:00
+// Editor: PhpStorm 2022.2.3
 
 //==============================================================================
 // Includes

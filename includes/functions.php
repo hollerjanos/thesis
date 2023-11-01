@@ -1,32 +1,6 @@
 <?php
 
 /**
- * <p>Random string generator</p>
- * @param int $length
- * @return string
- */
-function randomStringGenerator(int $length = 0): string
-{
-  $characters  = "0123456789";
-  $characters .= "abcdefghijklmnopqrstuvwxyz";
-  $characters .= "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
-  $return = "";
-
-  $min = 0;
-  $max = strlen($characters) - 1;
-
-  for ($index = 0; $index < $length; $index++)
-  {
-    $randomNumber = rand($min, $max);
-
-    $return .= $characters[$randomNumber];
-  }
-
-  return $return;
-}
-
-/**
  * <p>Display</p>
  * <hr/>
  * <p>Fancy way to display data.</p>
