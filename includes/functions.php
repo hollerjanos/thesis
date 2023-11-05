@@ -9,17 +9,17 @@
  */
 function display(string $title): void
 {
-  echo "<b>$title</b>";
+    echo "<b>$title</b>";
 
-  $numberOfArguments = func_num_args();
-  $arguments = func_get_args();
+    $numberOfArguments = func_num_args();
+    $arguments = func_get_args();
 
-  echo "<pre>";
-  for ($index = 1; $index < $numberOfArguments; $index++)
-  {
-    var_dump($arguments[$index]);
-  }
-  echo "</pre>";
+    echo "<pre>";
+    for ($index = 1; $index < $numberOfArguments; $index++)
+    {
+        var_dump($arguments[$index]);
+    }
+    echo "</pre>";
 }
 
 /**
@@ -31,15 +31,15 @@ function display(string $title): void
  */
 function exception(string $title): void
 {
-  echo "<b style=\"color: #F00\">$title</b>";
+    echo "<b style=\"color: #F00\">$title</b>";
 
-  $numberOfArguments = func_num_args();
-  $arguments = func_get_args();
+    $numberOfArguments = func_num_args();
+    $arguments = func_get_args();
 
-  echo "<pre>";
-  for ($index = 1; $index < $numberOfArguments; $index++)
-  {
-    var_dump($arguments[$index]);
-  }
-  echo "</pre>";
+    echo "<pre>";
+    for ($index = 1; $index < $numberOfArguments; $index++)
+    {
+        var_dump($arguments[$index]);
+    }
+    echo "</pre>";
 }
