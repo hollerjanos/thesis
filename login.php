@@ -151,7 +151,7 @@ if ($_POST)
             TwoFactorAuthentication::sendEmail(
                 $user["email"],
                 "Thesis - Two-factor authentication",
-                $code
+                "<p>Your code: <b>$code</b></p>"
             );
         }
         /*
