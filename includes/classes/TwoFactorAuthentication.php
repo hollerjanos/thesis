@@ -16,9 +16,20 @@
 namespace includes\classes;
 
 //==============================================================================
+// Includes
+//==============================================================================
+
+// PHP mailer
+require_once($_SERVER["DOCUMENT_ROOT"] . "/sendemail/phpmailer/src/PHPMailer.php");
+
+// SMTP
+require_once($_SERVER["DOCUMENT_ROOT"] . "/sendemail/phpmailer/src/SMTP.php");
+
+//==============================================================================
 // Imports
 //==============================================================================
 
+use PhpMailer\PhpMailer\PhpMailer;
 use Exception;
 
 class TwoFactorAuthentication
@@ -100,24 +111,39 @@ class TwoFactorAuthentication
 
     /**
      * <p>Send email</p>
-     * @param string $to
+     * @param string $address
      * @param string $subject
-     * @param string $message
-     * @param array|string $additionalHeaders
-     * @param string $additionalParams
+     * @param string $body
      * @return bool
      */
     static public function sendEmail(
-        string $to,
+        string $address,
         string $subject,
-        string $message,
-        array|string $additionalHeaders = [],
-        string $additionalParams = ""
+        string $body
     ): bool
     {
         try
         {
-            mail($to, $subject, $message, $additionalHeaders, $additionalParams);
+            $mail = new PhpMailer();
+
+            $mail->isSMTP();
+            $mail->Host = MAIL_HOST;
+            $mail->SMTPAuth = MAIL_AUTH;
+            $mail->Username = MAIL_USERNAME;
+            $mail->Password = MAIL_PASSWORD;
+            $mail->SMTPSecure = MAIL_SMTP_SECURE;
+            $mail->Port = MAIL_PORT;
+
+            $mail->setFrom(MAIL_FROM);
+
+            $mail->addAddress($address);
+
+            $mail->isHTML();
+
+            $mail->Subject = $subject;
+            $mail->Body = $body;
+
+            $mail->send();
 
             return true;
         }
