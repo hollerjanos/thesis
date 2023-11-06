@@ -38,11 +38,11 @@ try {
     $database->createTable(
         "users",
         [
-            "id" => "INT NOT NULL AUTO_INCREMENT PRIMARY KEY",
-            "username" => "VARCHAR(100) NOT NULL",
-            "password" => "VARCHAR(50) NOT NULL",
-            "email" => "VARCHAR(50) NOT NULL",
-            "phone" => "VARCHAR(50) NOT NULL"
+            "`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY",
+            "`username` VARCHAR(100) NOT NULL",
+            "`password` VARCHAR(50) NOT NULL",
+            "`email` VARCHAR(50) NOT NULL",
+            "`phone` VARCHAR(50) NOT NULL"
         ]
     );
 
@@ -53,6 +53,16 @@ try {
             "password" => "pw123",
             "email" => "test@gmail.com",
             "phone" => "07123456789"
+        ]
+    );
+
+    $database->createTable(
+        "2fa_codes",
+        [
+            "`id` INT NOT NULL AUTO_INCREMENT PRIMARY KEY",
+            "`user_id` INT NOT NULL",
+            "FOREIGN KEY (`user_id`) REFERENCES `users`(`id`)",
+            "`code` VARCHAR(100) NOT NULL",
         ]
     );
 } catch (Exception $exception) {
