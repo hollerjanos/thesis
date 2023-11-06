@@ -1,7 +1,5 @@
 <?php
 
-phpinfo();
-
 //==============================================================================
 // Display errors
 //==============================================================================
@@ -14,13 +12,13 @@ ini_set("display_errors", true);
 //==============================================================================
 
 // Functions
-require_once("includes/functions.php");
+require_once($_SERVER["DOCUMENT_ROOT"] . "/includes/functions.php");
 
 // Constants
-require_once("includes/constants.php");
+require_once($_SERVER["DOCUMENT_ROOT"] . "/includes/constants.php");
 
 // Two-factor authentication
-require_once("includes/classes/TwoFactorAuthentication.php");
+require_once($_SERVER["DOCUMENT_ROOT"] . "/includes/classes/TwoFactorAuthentication.php");
 
 //==============================================================================
 // Imports

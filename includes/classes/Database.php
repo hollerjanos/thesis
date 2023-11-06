@@ -20,7 +20,7 @@ namespace includes\classes;
 //==============================================================================
 
 // Functions
-require_once("../functions.php");
+require_once($_SERVER["DOCUMENT_ROOT"] . "/includes/functions.php");
 
 //==============================================================================
 // Imports
@@ -28,6 +28,7 @@ require_once("../functions.php");
 
 use PDO;
 use Exception;
+use PDOStatement;
 
 //==============================================================================
 // Process
@@ -285,6 +286,67 @@ class Database
         }
         catch (Exception $exception)
         {
+            if ($this->debug)
+                exception(
+                    "Database | deleteDatabase()",
+                    [
+                        "message" => $exception->getMessage()
+                    ]
+                );
+
+            return false;
+        }
+    }
+
+    /**
+     * <p>Delete database</p>
+     * @param array $select
+     * @param string $from
+     * @param array $joins
+     * @param array $where
+     * @param array $order
+     * @param array $limit
+     * @return PDOStatement|false
+     */
+    public function selectDataFromTable(
+        array $select,
+        string $from,
+        array $joins = [],
+        array $where = [],
+        array $order = [],
+        array $limit = [],
+
+    ): bool|PDOStatement
+    {
+        try {
+            $sql = "SELECT " . implode(", ", $select);
+            $sql .= " FROM $from";
+            if (!empty($joins)) {
+                $sql .= " " . implode(" ", $joins);
+            }
+            if (!empty($where)) {
+                $sql .= " " . implode(" AND ", $where);
+            }
+            if (!empty($where)) {
+                $sql .= " ORDER BY" . implode(", ", $order);
+            }
+            if (!empty($limit)) {
+                $sql .= " LIMIT " . implode(", ", $limit);
+            }
+
+            if ($this->debug)
+                display(
+                    "Database | selectDataFromTable()",
+                    [
+                        "sql" => $sql
+                    ]
+                );
+
+            $statement = $this->db->prepare($sql);
+            $statement->execute();
+
+            return $statement;
+        } catch (Exception $exception) {
             if ($this->debug)
                 exception(
                     "Database | deleteDatabase()",

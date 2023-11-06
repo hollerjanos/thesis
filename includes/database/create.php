@@ -5,10 +5,10 @@
 //==============================================================================
 
 // Constants
-require_once($_SERVER["DOCUMENT_ROOT"]."/includes/constants.php");
+require_once($_SERVER["DOCUMENT_ROOT"] . "/includes/constants.php");
 
 // Database
-require_once($_SERVER["DOCUMENT_ROOT"]."/includes/classes/Database.php");
+require_once($_SERVER["DOCUMENT_ROOT"] . "/includes/classes/Database.php");
 
 //==============================================================================
 // Imports
@@ -41,6 +41,8 @@ try
             "id" => "INT NOT NULL AUTO_INCREMENT PRIMARY KEY",
             "username" => "VARCHAR(100) NOT NULL",
             "password" => "VARCHAR(50) NOT NULL",
+            "email" => "VARCHAR(50) NOT NULL",
+            "phone" => "VARCHAR(50) NOT NULL",
         ]
     );
 
@@ -48,7 +50,9 @@ try
         "users",
         [
             "username" => "Jani",
-            "password" => "pw123"
+            "password" => "pw123",
+            "email" => "test@gmail.com",
+            "phone" => "07123456789"
         ]
     );
 }
