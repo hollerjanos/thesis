@@ -201,10 +201,7 @@ class Database
     {
         try
         {
-            $attributes = [];
-            foreach ($config as $key => $item)
-                $attributes[] = "`$key` $item";
-            $attributes = implode(", ", $attributes);
+            $attributes = implode(", ", $config);
 
             $sql  = "CREATE TABLE IF NOT EXISTS `$name` ($attributes);";
 
@@ -480,6 +477,56 @@ class Database
             if ($this->debug)
                 exception(
                     "Database | checkLogin()",
+                    [
+                        "message" => $exception->getMessage()
+                    ]
+                );
+
+            return false;
+        }
+    }
+
+    /**
+     * @param $userID
+     * @return array|bool
+     */
+    public function checkCode(
+        $userID
+    ): array|bool
+    {
+        try {
+            $params = [
+                "id" => $userID,
+            ];
+
+            $sql  = "SELECT `2fa_codes`.*";
+            $sql .= " FROM `2fa_codes`";
+            $sql .= " WHERE `2fa_codes`.`user_id` = :id";
+            $sql .= " ORDER BY `id` DESC";
+            $sql .= " LIMIT 1;";
+
+            if ($this->debug)
+                display(
+                    "Database | checkCode()",
+                    [
+                        "sql" => $sql,
+                        "params" => $params
+                    ]
+                );
+
+            $statement = $this->db->prepare($sql);
+            $statement->execute($params);
+            $result = $statement->fetch();
+
+            if (!$result) {
+                return [];
+            }
+
+            return $result;
+        } catch (Exception $exception) {
+            if ($this->debug)
+                exception(
+                    "Database | checkCode()",
                     [
                         "message" => $exception->getMessage()
                     ]
