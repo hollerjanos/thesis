@@ -6,16 +6,83 @@
 }
 
 html, body {
-    background-color: var(--gray);
-    color: var(--white);
+    background-color: var(--white);
+    color: var(--black);
+    font-family: Arial, serif;
+    margin: 0;
 }
 
 input {
-    background-color: var(--black);
-    color: var(--white);
-    border: 2px solid var(--white);
+    background-color: var(--white);
+    color: var(--black);
+    border: 2px solid var(--black);
+}
+
+label {
+    font-weight: bold;
+}
+
+.title {
+    text-align: center;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 0;
+    background: rgb(224, 224, 224);
+    padding: 5px;
+}
+
+form table tr.fields {
+    text-align: right;
+}
+
+form table tr.submit {
+    text-align: center;
+}
+
+form input[type="submit"] {
+    border: 2px solid rgb(0, 128, 255);
+    border-radius: 5px;
+    background: rgb(0, 192, 255);
+}
+
+form input[type="submit"]:hover {
+    background: rgb(0, 160, 255);
 }
 
 .error {
-    color: var(--red);
+    text-align: center;
+    color: rgb(255, 0, 0);
+    background: rgb(255, 192, 192);
+    padding: 5px;
+    margin: 0;
+}
+
+.success {
+    text-align: center;
+    color: rgb(0, 128, 0);
+    background: rgb(192, 255, 192);
+    padding: 5px;
+    margin: 0;
+}
+
+nav {
+    background: rgb(128, 128, 128);
+    margin: 0;
+    padding: 15px;
+}
+
+nav a {
+    background: rgb(191, 191, 191);
+    padding: 10px;
+    border: 2px solid rgb(160, 160, 160);
+    color: rgb(0, 0, 0);
+    text-decoration: none;
+}
+
+nav a:hover {
+    background: rgb(224, 224, 224);
 }
