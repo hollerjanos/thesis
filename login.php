@@ -20,11 +20,21 @@ require_once($_SERVER["DOCUMENT_ROOT"] . "/includes/constants.php");
 // Database
 require_once($_SERVER["DOCUMENT_ROOT"] . "/includes/classes/Database.php");
 
+// Two-factor authentication
+require_once($_SERVER["DOCUMENT_ROOT"] . "/includes/classes/TwoFactorAuthentication.php");
+
 //==============================================================================
 // Imports
 //==============================================================================
 
 use includes\classes\Database;
+use includes\classes\TwoFactorAuthentication;
+
+//==============================================================================
+// Session
+//==============================================================================
+
+session_start();
 
 //==============================================================================
 // Declarations
@@ -32,10 +42,7 @@ use includes\classes\Database;
 
 $requiredFields = [
     "username" => "Username",
-    "password" => "Password",
-    "passwordConfirmation" => "Password confirmation",
-    "email" => "E-mail",
-    "phone" => "Phone"
+    "password" => "Password"
 ];
 
 // Show message or error
@@ -45,14 +52,17 @@ $message = [
     "message" => ""
 ];
 
-if (isset($_GET["message"])) {
+if (isset($_GET["message"]))
+{
     $message["display"] = true;
-    $message["message"] = match($_GET["message"]) {
-        "200" => "Registration was successful!",
+    $message["message"] = match($_GET["message"])
+    {
+        "200" => "Login was successful!",
         default => ""
     };
 
-    if (empty($message["message"])) {
+    if (empty($message["message"]))
+    {
         $message["display"] = false;
     }
 }
@@ -63,7 +73,8 @@ if (isset($_GET["message"])) {
 
 if ($_POST)
 {
-    try {
+    try
+    {
         $errors = [];
 
         foreach ($requiredFields as $requiredFieldKey => $requiredFieldItem)
@@ -96,13 +107,6 @@ if ($_POST)
             );
         }
 
-        if ($_POST["password"] != $_POST["passwordConfirmation"])
-        {
-            throw new Exception(
-                "The passwords are not matching!"
-            );
-        }
-
         $database = new Database(
             DB_HOSTNAME,
             DB_USERNAME,
@@ -110,20 +114,32 @@ if ($_POST)
             DB_DATABASE
         );
 
-        $users = $database->isUserExist(
+        $user = $database->checkLogin(
             $_POST["username"],
-            $_POST["email"],
-            $_POST["phone"]
+            encryption($_POST["password"])
         );
 
-        if (!empty($users)) {
+        if (empty($user))
+        {
             throw new Exception(
-                "The user already exists!"
+                "Invalid username or password!"
             );
         }
 
+        // Save data
+        $_SESSION["id"] = $user["id"];
+        $_SESSION["username"] = $_POST["username"];
+        $_SESSION["password"] = $_POST["password"];
+        $_SESSION["email"] = $_POST["email"];
+        $_SESSION["phone"] = $_POST["phone"];
+
+        $code = TwoFactorAuthentication::generateCode(
+            CODE_TYPE,
+            CODE_LENGTH
+        );
+
         $database->insertIntoTable(
-            "users",
+            "2fa",
             [
                 "username" => $_POST["username"],
                 "password" => encryption($_POST["password"]),
@@ -132,9 +148,11 @@ if ($_POST)
             ]
         );
 
-        header("Location: {$_SERVER["PHP_SELF"]}?message=200");
+        header("Location: /2fa.php");
         exit;
-    } catch (Exception $exception) {
+    }
+    catch (Exception $exception)
+    {
         $message["display"] = true;
         $message["error"] = true;
         $message["message"] = $exception->getMessage();
@@ -152,7 +170,7 @@ require_once($_SERVER["DOCUMENT_ROOT"] . "/includes/header.php");
 require_once($_SERVER["DOCUMENT_ROOT"] . "/includes/navbar.php");
 
 ?>
-        <h1 class="title">Register</h1>
+        <h1 class="title">Login</h1>
 <?php if ($message["display"]) { ?>
         <p class="<?= $message["error"] ? "error" : "success" ?>"><?= $message["message"] ?></p>
 <?php } ?>
@@ -174,33 +192,9 @@ require_once($_SERVER["DOCUMENT_ROOT"] . "/includes/navbar.php");
                         <input id="password" type="password" name="password"/>
                     </td>
                 </tr>
-                <tr class="fields">
-                    <td>
-                        <label for="passwordConfirmation">Password confirmation</label>
-                    </td>
-                    <td>
-                        <input id="passwordConfirmation" type="password" name="passwordConfirmation"/>
-                    </td>
-                </tr>
-                <tr class="fields">
-                    <td>
-                        <label for="email">E-mail address</label>
-                    </td>
-                    <td>
-                        <input id="email" type="email" name="email" autocomplete="off"/>
-                    </td>
-                </tr>
-                <tr class="fields">
-                    <td>
-                        <label for="phone">Phone address</label>
-                    </td>
-                    <td>
-                        <input id="phone" type="tel" name="phone" autocomplete="off"/>
-                    </td>
-                </tr>
                 <tr class="submit">
                     <td colspan="2">
-                        <input id="submit" type="submit" value="Register"/>
+                        <input id="submit" type="submit" value="Login"/>
                     </td>
                 </tr>
             </table>
