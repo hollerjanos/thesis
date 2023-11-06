@@ -43,28 +43,59 @@ class Database
     private string $hostname;
     private string $username;
     private string $password;
+    private string $database;
 
     private PDO $db;
 
-    private bool $debug = true;
+    private bool $debug = DEBUG;
+
+    private array $options = [
+        PDO::ATTR_EMULATE_PREPARES   => false,
+        PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    ];
 
     //============================================================================
     // Construct
     //============================================================================
 
     public function __construct(
-        string $hostname = "localhost",
-        string $username = "root",
-        string $password = ""
-    )
-    {
-        $this->hostname = $hostname;
-        $this->username = $username;
-        $this->password = $password;
+        string $hostname,
+        string $username,
+        string $password,
+        string $database
+    ) {
+        try {
+            $this->hostname = $hostname;
+            $this->username = $username;
+            $this->password = $password;
+            $this->database = $database;
 
-        $this->connection();
+            $this->connection();
 
-        $this->setAttributes();
+            if (!$this->isDatabaseExist()) {
+                throw new Exception(
+                    ERROR_CODES[14299],
+                    14299
+                );
+            }
+
+            $this->selectDatabase();
+        } catch (Exception $exception) {
+            if ($this->debug) {
+                exception(
+                    "Database | __construct()",
+                    [
+                        "message" => $exception->getMessage()
+                    ]
+                );
+            } else {
+                $code = $exception->getCode();
+
+                header("Location: /error.php?code=$code");
+                exit;
+            }
+        }
     }
 
     /**
@@ -76,59 +107,47 @@ class Database
         // Data source name
         $dsn = "mysql:host=$this->hostname";
 
-        $this->db = new PDO($dsn, $this->username, $this->password);
-    }
-
-    /**
-     * <p>Set attributes</p>
-     * @return void
-     */
-    private function setAttributes(): void
-    {
-        $this->db->setAttribute(
-            PDO::ATTR_ERRMODE,
-            PDO::ERRMODE_EXCEPTION
-        );
-        $this->db->setAttribute(
-            PDO::ATTR_DEFAULT_FETCH_MODE,
-            PDO::FETCH_ASSOC
+        $this->db = new PDO(
+            $dsn,
+            $this->username,
+            $this->password,
+            $this->options
         );
     }
 
     /**
      * <p>Create database</p>
-     * @param string $database
      * @return bool
      */
-    public function createDatabase(
-        string $database
-    ): bool {
-        try
-        {
-            $sql = "CREATE DATABASE IF NOT EXISTS `$database`;";
+    public function createDatabase(): bool {
+        try {
+            $sql = "CREATE DATABASE IF NOT EXISTS `$this->database`;";
 
-            if ($this->debug)
+            $params = null;
+
+            if ($this->debug) {
                 display(
                     "Database | createDatabase()",
                     [
-                        "sql" => $sql
+                        "sql" => $sql,
+                        "params" => $params
                     ]
                 );
+            }
 
             $statement = $this->db->prepare($sql);
-            $statement->execute();
+            $statement->execute($params);
 
             return true;
-        }
-        catch (Exception $exception)
-        {
-            if ($this->debug)
+        } catch (Exception $exception) {
+            if ($this->debug) {
                 exception(
                     "Database | createDatabase()",
                     [
                         "message" => $exception->getMessage()
                     ]
                 );
+            }
 
             return false;
         }
@@ -136,38 +155,37 @@ class Database
 
     /**
      * <p>Select database</p>
-     * @param string $database
      * @return bool
      */
-    public function selectDatabase(
-        string $database
-    ): bool {
-        try
-        {
-            $sql = "USE `$database`;";
+    public function selectDatabase(): bool {
+        try {
+            $sql = "USE `$this->database`;";
 
-            if ($this->debug)
+            $params = null;
+
+            if ($this->debug) {
                 display(
                     "Database | selectDatabase()",
                     [
-                        "sql" => $sql
+                        "sql" => $sql,
+                        "params" => $params
                     ]
                 );
+            }
 
             $statement = $this->db->prepare($sql);
-            $statement->execute();
+            $statement->execute($params);
 
             return true;
-        }
-        catch (Exception $exception)
-        {
-            if ($this->debug)
+        } catch (Exception $exception) {
+            if ($this->debug) {
                 exception(
                     "Database | selectDatabase()",
                     [
                         "message" => $exception->getMessage()
                     ]
                 );
+            }
 
             return false;
         }
@@ -218,30 +236,30 @@ class Database
 
     /**
      * <p>Insert into table</p>
-     * @param string $name
-     * @param $data
+     * @param string $table
+     * @param $params
      * @return bool
      */
-    public function insertIntoTable(string $name, $data): bool
+    public function insertIntoTable(string $table, $params): bool
     {
         try
         {
-            $keys = "`" . implode("`, `", array_keys($data)) . "`";
-            $items = ":" . implode(", :", array_keys($data));
+            $keys = "`" . implode("`, `", array_keys($params)) . "`";
+            $items = ":" . implode(", :", array_keys($params));
 
-            $sql  = "INSERT INTO `$name` ($keys) VALUES ($items);";
+            $sql  = "INSERT INTO `$table` ($keys) VALUES ($items);";
 
             if ($this->debug)
                 display(
                     "Database | insertIntoTable()",
                     [
                         "sql" => $sql,
-                        "data" => $data
+                        "params" => $params
                     ]
                 );
 
             $statement = $this->db->prepare($sql);
-            $statement->execute($data);
+            $statement->execute($params);
 
             return true;
         }
@@ -261,26 +279,27 @@ class Database
 
     /**
      * <p>Delete database</p>
-     * @param string $database
      * @return bool
      */
-    public function deleteDatabase(
-        string $database
-    ): bool {
+    public function deleteDatabase(): bool {
         try
         {
-            $sql = "DROP DATABASE IF EXISTS `$database`;";
+            $sql = "DROP DATABASE IF EXISTS `$this->database`;";
 
-            if ($this->debug)
+            $params = null;
+
+            if ($this->debug) {
                 display(
                     "Database | deleteDatabase()",
                     [
-                        "sql" => $sql
+                        "sql" => $sql,
+                        "params" => $params
                     ]
                 );
+            }
 
             $statement = $this->db->prepare($sql);
-            $statement->execute();
+            $statement->execute($params);
 
             return true;
         }
@@ -299,57 +318,168 @@ class Database
     }
 
     /**
-     * <p>Delete database</p>
-     * @param array $select
-     * @param string $from
-     * @param array $joins
-     * @param array $where
-     * @param array $order
-     * @param array $limit
-     * @return PDOStatement|false
+     * <p>Is user exist</p>
+     * @param string $username
+     * @param string $email
+     * @param string $phone
+     * @return array|bool
      */
-    public function selectDataFromTable(
-        array $select,
-        string $from,
-        array $joins = [],
-        array $where = [],
-        array $order = [],
-        array $limit = [],
-
-    ): bool|PDOStatement
-    {
+    public function isUserExist(
+        string $username = "",
+        string $email = "",
+        string $phone = ""
+    ): array|bool {
         try {
-            $sql = "SELECT " . implode(", ", $select);
-            $sql .= " FROM $from";
-            if (!empty($joins)) {
-                $sql .= " " . implode(" ", $joins);
+            $params = [];
+            $whereClauses = [];
+
+            if (!empty($username)) {
+                $whereClauses[] = "`users`.`username` = :username";
+                $params["username"] = $username;
             }
-            if (!empty($where)) {
-                $sql .= " " . implode(" AND ", $where);
+            if (!empty($email)) {
+                $whereClauses[] = "`users`.`email` = :email";
+                $params["email"] = $email;
             }
-            if (!empty($where)) {
-                $sql .= " ORDER BY" . implode(", ", $order);
+            if (!empty($phone)) {
+                $whereClauses[] = "`users`.`phone` = :phone";
+                $params["phone"] = $phone;
             }
-            if (!empty($limit)) {
-                $sql .= " LIMIT " . implode(", ", $limit);
+
+            $sql  = "SELECT `users`.*";
+            $sql .= " FROM `users`";
+            if (!empty($whereClauses)) {
+                $sql .= " WHERE " . implode(" OR ", $whereClauses);
             }
+            $sql .= " LIMIT 1;";
 
             if ($this->debug)
                 display(
-                    "Database | selectDataFromTable()",
+                    "Database | isUserExists()",
                     [
-                        "sql" => $sql
+                        "sql" => $sql,
+                        "params" => $params
                     ]
                 );
 
             $statement = $this->db->prepare($sql);
-            $statement->execute();
+            $statement->execute($params);
+            $result = $statement->fetch();
 
-            return $statement;
+            if (!$result) {
+                return [];
+            }
+
+            return $result;
         } catch (Exception $exception) {
             if ($this->debug)
                 exception(
-                    "Database | deleteDatabase()",
+                    "Database | isUserExists()",
+                    [
+                        "message" => $exception->getMessage()
+                    ]
+                );
+
+            return false;
+        }
+    }
+
+    /**
+     * <p>Is database exist</p>
+     * @return bool
+     */
+    public function isDatabaseExist(): bool
+    {
+        try {
+            $sql  = "SELECT 1";
+            $sql .= " FROM `INFORMATION_SCHEMA`.`SCHEMATA`";
+            $sql .= " WHERE `SCHEMATA`.`SCHEMA_NAME` = \"$this->database\"";
+            $sql .= " LIMIT 1;";
+
+            $params = null;
+
+            if ($this->debug) {
+                display(
+                    "Database | isDatabaseExist()",
+                    [
+                        "sql" => $sql,
+                        "params" => $params
+                    ]
+                );
+            }
+
+            $statement = $this->db->prepare($sql);
+            $statement->execute($params);
+            $result = $statement->fetch();
+
+            if (!$result) {
+                return false;
+            }
+
+            return true;
+        } catch (Exception $exception) {
+            if ($this->debug) {
+                exception(
+                    "Database | isDatabaseExist()",
+                    [
+                        "message" => $exception->getMessage()
+                    ]
+                );
+            }
+
+            return false;
+        }
+    }
+
+    /**
+     * <p>Check login</p>
+     * @param string $username
+     * @param string $password
+     * @return array|bool
+     */
+    public function checkLogin(
+        string $username,
+        string $password
+    ): array|bool {
+        try {
+            $params = [
+                "username" => $username,
+                "password" => $password
+            ];
+            $whereClauses = [
+                "`users`.`username` = :username",
+                "`users`.`password` = :password"
+            ];
+
+            $sql  = "SELECT `users`.*";
+            $sql .= " FROM `users`";
+            if (!empty($whereClauses)) {
+                $sql .= " WHERE " . implode(" AND ", $whereClauses);
+            }
+            $sql .= " LIMIT 1;";
+
+            if ($this->debug)
+                display(
+                    "Database | checkLogin()",
+                    [
+                        "sql" => $sql,
+                        "params" => $params
+                    ]
+                );
+
+            $statement = $this->db->prepare($sql);
+            $statement->execute($params);
+            $result = $statement->fetch();
+
+            if (!$result) {
+                return [];
+            }
+
+            return $result;
+        } catch (Exception $exception) {
+            if ($this->debug)
+                exception(
+                    "Database | checkLogin()",
                     [
                         "message" => $exception->getMessage()
                     ]
