@@ -20,20 +20,20 @@ use includes\classes\Database;
 // Process
 //==============================================================================
 
-try
-{
+try {
     // Connection
     $database = new Database(
         DB_HOSTNAME,
         DB_USERNAME,
-        DB_PASSWORD
+        DB_PASSWORD,
+        DB_DATABASE
     );
 
-    $database->deleteDatabase(DB_DATABASE);
+    $database->deleteDatabase();
 
-    $database->createDatabase(DB_DATABASE);
+    $database->createDatabase();
 
-    $database->selectDatabase(DB_DATABASE);
+    $database->selectDatabase();
 
     $database->createTable(
         "users",
@@ -42,7 +42,7 @@ try
             "username" => "VARCHAR(100) NOT NULL",
             "password" => "VARCHAR(50) NOT NULL",
             "email" => "VARCHAR(50) NOT NULL",
-            "phone" => "VARCHAR(50) NOT NULL",
+            "phone" => "VARCHAR(50) NOT NULL"
         ]
     );
 
@@ -55,9 +55,7 @@ try
             "phone" => "07123456789"
         ]
     );
-}
-catch (Exception $exception)
-{
+} catch (Exception $exception) {
     display(
         "Database create | Exception caught",
         $exception->getMessage()
