@@ -128,10 +128,10 @@ if ($_POST)
 
         // Save data
         $_SESSION["id"] = $user["id"];
-        $_SESSION["username"] = $_POST["username"];
-        $_SESSION["password"] = $_POST["password"];
-        $_SESSION["email"] = $_POST["email"];
-        $_SESSION["phone"] = $_POST["phone"];
+        $_SESSION["username"] = $user["username"];
+        $_SESSION["password"] = $user["password"];
+        $_SESSION["email"] = $user["email"];
+        $_SESSION["phone"] = $user["phone"];
 
         $code = TwoFactorAuthentication::generateCode(
             CODE_TYPE,
@@ -139,14 +139,32 @@ if ($_POST)
         );
 
         $database->insertIntoTable(
-            "2fa",
+            "2fa_codes",
             [
-                "username" => $_POST["username"],
-                "password" => encryption($_POST["password"]),
-                "email" => $_POST["email"],
-                "phone" => $_POST["phone"]
+                "user_id" => $user["id"],
+                "code" => $code,
             ]
         );
+
+        if (TWO_FACTOR_AUTHENTICATION_TYPE == "email")
+        {
+            TwoFactorAuthentication::sendEmail(
+                $user["email"],
+                "Thesis - Two-factor authentication",
+                $code
+            );
+        }
+        /*
+        elseif (TWO_FACTOR_AUTHENTICATION_TYPE == "sms")
+        {
+            TwoFactorAuthentication::sendSMS(
+                $_POST["email"],
+                "Thesis - Two-factor authentication",
+                $code
+            );
+        }
+        */
+
 
         header("Location: /2fa.php");
         exit;

@@ -116,12 +116,34 @@ if ($_POST)
             );
         }
 
-        if (empty($user))
+        $database = new Database(
+            DB_HOSTNAME,
+            DB_USERNAME,
+            DB_PASSWORD,
+            DB_DATABASE
+        );
+
+        $code = $database->checkCode(
+            $_SESSION["id"]
+        );
+
+        if (empty($code))
+        {
+            header("Location: /login.php");
+            exit;
+        }
+
+        if ($code["code"] != $_POST["code"])
         {
             throw new Exception(
-                "Invalid username of password!"
+                "Invalid code given!"
             );
         }
+
+        $_SESSION["login"] = true;
+
+        header("Location: /dashboard.php");
+        exit;
     }
     catch (Exception $exception)
     {
