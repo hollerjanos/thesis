@@ -43,3 +43,19 @@ function exception(string $title): void
     }
     echo "</pre>";
 }
+
+/**
+ * <p>Encryption</p>
+ * @param string $data
+ * @return bool|string
+ */
+function encryption(string $data): bool|string
+{
+    return openssl_encrypt(
+        $data,
+        ENCRYPTION_CIPHER_ALGO,
+        ENCRYPTION_PASSPHRASE,
+        ENCRYPTION_OPTIONS,
+        ENCRYPTION_IV
+    );
+}
