@@ -18,5 +18,5 @@ session_destroy();
 // Redirect
 //==============================================================================
 
-header("Location: /");
+header("Location: /login.php");
 exit;
