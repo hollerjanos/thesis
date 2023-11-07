@@ -20,16 +20,13 @@ namespace includes\classes;
 //==============================================================================
 
 // PHP mailer
-require_once($_SERVER["DOCUMENT_ROOT"] . "/sendemail/phpmailer/src/PHPMailer.php");
-
-// SMTP
-require_once($_SERVER["DOCUMENT_ROOT"] . "/sendemail/phpmailer/src/SMTP.php");
+require_once($_SERVER["DOCUMENT_ROOT"] . "/vendor/autoload.php");
 
 //==============================================================================
 // Imports
 //==============================================================================
 
-use PhpMailer\PhpMailer\PhpMailer;
+use PHPMailer\PHPMailer\PHPMailer;
 use Exception;
 
 class TwoFactorAuthentication
@@ -111,12 +108,14 @@ class TwoFactorAuthentication
 
     /**
      * <p>Send email</p>
+     * @param string $username
      * @param string $address
      * @param string $subject
      * @param string $body
      * @return bool
      */
     static public function sendEmail(
+        string $username,
         string $address,
         string $subject,
         string $body
@@ -134,9 +133,9 @@ class TwoFactorAuthentication
             $mail->SMTPSecure = MAIL_SMTP_SECURE;
             $mail->Port = MAIL_PORT;
 
-            $mail->setFrom(MAIL_FROM);
+            $mail->setFrom(MAIL_FROM, "Thesis");
 
-            $mail->addAddress($address);
+            $mail->addAddress($address, $username);
 
             $mail->isHTML();
 
