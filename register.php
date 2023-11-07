@@ -163,7 +163,7 @@ require_once($_SERVER["DOCUMENT_ROOT"] . "/includes/navbar.php");
                         <label for="username">Username</label>
                     </td>
                     <td>
-                        <input id="username" type="text" name="username" autocomplete="off"/>
+                        <input id="username" type="text" name="username" autocomplete="off" placeholder="John" required/>
                     </td>
                 </tr>
                 <tr class="fields">
@@ -171,7 +171,7 @@ require_once($_SERVER["DOCUMENT_ROOT"] . "/includes/navbar.php");
                         <label for="password">Password</label>
                     </td>
                     <td>
-                        <input id="password" type="password" name="password"/>
+                        <input id="password" type="password" name="password" placeholder="************" required/>
                     </td>
                 </tr>
                 <tr class="fields">
@@ -179,7 +179,7 @@ require_once($_SERVER["DOCUMENT_ROOT"] . "/includes/navbar.php");
                         <label for="passwordConfirmation">Password confirmation</label>
                     </td>
                     <td>
-                        <input id="passwordConfirmation" type="password" name="passwordConfirmation"/>
+                        <input id="passwordConfirmation" type="password" name="passwordConfirmation" placeholder="************" required/>
                     </td>
                 </tr>
                 <tr class="fields">
@@ -187,7 +187,7 @@ require_once($_SERVER["DOCUMENT_ROOT"] . "/includes/navbar.php");
                         <label for="email">E-mail address</label>
                     </td>
                     <td>
-                        <input id="email" type="email" name="email" autocomplete="off"/>
+                        <input id="email" type="email" name="email" autocomplete="off" placeholder="john@example.com" required/>
                     </td>
                 </tr>
                 <tr class="fields">
@@ -195,7 +195,7 @@ require_once($_SERVER["DOCUMENT_ROOT"] . "/includes/navbar.php");
                         <label for="phone">Phone address</label>
                     </td>
                     <td>
-                        <input id="phone" type="tel" name="phone" autocomplete="off"/>
+                        <input id="phone" type="tel" name="phone" autocomplete="off" placeholder="+36 ** *** ****" required/>
                     </td>
                 </tr>
                 <tr class="submit">

@@ -149,6 +149,7 @@ if ($_POST)
         if (TWO_FACTOR_AUTHENTICATION_TYPE == "email")
         {
             TwoFactorAuthentication::sendEmail(
+                $user["username"],
                 $user["email"],
                 "Thesis - Two-factor authentication",
                 "<p>Your code: <b>$code</b></p>"
@@ -199,7 +200,7 @@ require_once($_SERVER["DOCUMENT_ROOT"] . "/includes/navbar.php");
                         <label for="username">Username</label>
                     </td>
                     <td>
-                        <input id="username" type="text" name="username" autocomplete="off"/>
+                        <input id="username" type="text" name="username" autocomplete="off" placeholder="John" required/>
                     </td>
                 </tr>
                 <tr class="fields">
@@ -207,7 +208,7 @@ require_once($_SERVER["DOCUMENT_ROOT"] . "/includes/navbar.php");
                         <label for="password">Password</label>
                     </td>
                     <td>
-                        <input id="password" type="password" name="password"/>
+                        <input id="password" type="password" name="password" placeholder="************" required/>
                     </td>
                 </tr>
                 <tr class="submit">

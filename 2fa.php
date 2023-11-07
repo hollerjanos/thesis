@@ -184,7 +184,7 @@ require_once($_SERVER["DOCUMENT_ROOT"] . "/includes/navbar.php");
                         <label for="code">Code</label>
                     </td>
                     <td>
-                        <input id="code" type="text" name="code" autocomplete="off"/>
+                        <input id="code" type="text" name="code" autocomplete="off" placeholder="******" required/>
                     </td>
                 </tr>
                 <tr class="submit">
