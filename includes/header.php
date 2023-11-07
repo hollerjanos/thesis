@@ -15,7 +15,7 @@ require_once($_SERVER["DOCUMENT_ROOT"] . "/includes/constants.php");
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>2FA - Two-factor authentication</title>
+        <title>Two-factor authentication</title>
         <meta charset="UTF-8"/>
         <link rel="stylesheet" href="/assets/css/style.css?v=<?= RANDOM_VERSION ?>"/>
         <script src="/assets/js/script.js?v=<?= RANDOM_VERSION ?>" defer></script>
