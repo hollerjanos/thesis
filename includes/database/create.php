@@ -46,16 +46,6 @@ try {
         ]
     );
 
-    $database->insertIntoTable(
-        "users",
-        [
-            "username" => "Jani",
-            "password" => "pw123",
-            "email" => "test@gmail.com",
-            "phone" => "07123456789"
-        ]
-    );
-
     $database->createTable(
         "2fa_codes",
         [
