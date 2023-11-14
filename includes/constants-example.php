@@ -4,7 +4,7 @@
 // Debugging
 //==============================================================================
 
-const DEBUG = true;
+const DEBUG = false;
 
 //==============================================================================
 // Database
@@ -52,13 +52,21 @@ define("RANDOM_VERSION", rand(10000, 99999));
 const TWO_FACTOR_AUTHENTICATION_TYPE = "email";
 
 //==============================================================================
-// Mail
+// E-mail
 //==============================================================================
 
-const MAIL_HOST = "";
-const MAIL_AUTH = "";
-const MAIL_USERNAME = "";
-const MAIL_PASSWORD = "";
-const MAIL_SMTP_SECURE = "";
-const MAIL_PORT = "";
-const MAIL_FROM = "";
+const EMAIL_HOST = "";
+const EMAIL_AUTH = "";
+const EMAIL_USERNAME = "";
+const EMAIL_PASSWORD = "";
+const EMAIL_SMTP_SECURE = "";
+const EMAIL_PORT = "";
+const EMAIL_FROM = "";
+
+//==============================================================================
+// SMS
+//==============================================================================
+
+const SMS_BASE_URL = "";
+const SMS_API_KEY = "";
+const SMS_SENDER = "";
