@@ -19,6 +19,9 @@ namespace includes\classes;
 // Includes
 //==============================================================================
 
+// Constants
+require_once($_SERVER["DOCUMENT_ROOT"] . "/includes/constants.php");
+
 // PHP mailer
 require_once($_SERVER["DOCUMENT_ROOT"] . "/vendor/autoload.php");
 
@@ -26,8 +29,16 @@ require_once($_SERVER["DOCUMENT_ROOT"] . "/vendor/autoload.php");
 // Imports
 //==============================================================================
 
-use PHPMailer\PHPMailer\PHPMailer;
 use Exception;
+use Throwable;
+
+use PHPMailer\PHPMailer\PHPMailer;
+
+use Infobip\Api\SmsApi;
+use Infobip\Configuration;
+use Infobip\Model\SmsAdvancedTextualRequest;
+use Infobip\Model\SmsDestination;
+use Infobip\Model\SmsTextualMessage;
 
 class TwoFactorAuthentication
 {
@@ -114,7 +125,7 @@ class TwoFactorAuthentication
      * @param string $body
      * @return bool
      */
-    static public function sendEmail(
+    public static function sendEmail(
         string $username,
         string $address,
         string $subject,
@@ -126,14 +137,14 @@ class TwoFactorAuthentication
             $mail = new PhpMailer();
 
             $mail->isSMTP();
-            $mail->Host = MAIL_HOST;
-            $mail->SMTPAuth = MAIL_AUTH;
-            $mail->Username = MAIL_USERNAME;
-            $mail->Password = MAIL_PASSWORD;
-            $mail->SMTPSecure = MAIL_SMTP_SECURE;
-            $mail->Port = MAIL_PORT;
+            $mail->Host = EMAIL_HOST;
+            $mail->SMTPAuth = EMAIL_AUTH;
+            $mail->Username = EMAIL_USERNAME;
+            $mail->Password = EMAIL_PASSWORD;
+            $mail->SMTPSecure = EMAIL_SMTP_SECURE;
+            $mail->Port = EMAIL_PORT;
 
-            $mail->setFrom(MAIL_FROM, "Thesis");
+            $mail->setFrom(EMAIL_FROM, "Thesis");
 
             $mail->addAddress($address, $username);
 
@@ -148,6 +159,49 @@ class TwoFactorAuthentication
         }
         catch (Exception)
         {
+            return false;
+        }
+    }
+
+    public static function sendSMS(
+        string $recipient,
+        string $text
+    ): bool
+    {
+        $baseURL = SMS_BASE_URL;
+        $apiKey = SMS_API_KEY;
+
+        $sender = SMS_SENDER;
+
+        $configuration = new Configuration(host: $baseURL, apiKey: $apiKey);
+
+        $sendSmsApi = new SmsApi(config: $configuration);
+
+        $destination = new SmsDestination(
+            to: $recipient
+        );
+
+        $message = new SmsTextualMessage(destinations: [$destination], from: $sender, text: $text);
+
+        $request = new SmsAdvancedTextualRequest(messages: [$message]);
+
+        try {
+            $sendSmsApi->sendSmsMessage($request);
+
+            /*
+            $smsResponse = $sendSmsApi->sendSmsMessage($request);
+
+            echo $smsResponse->getBulkId() . PHP_EOL;
+
+            foreach ($smsResponse->getMessages() ?? [] as $message) {
+                echo sprintf('Message ID: %s, status: %s', $message->getMessageId(), $message->getStatus()?->getName()) . PHP_EOL;
+            }
+            */
+
+            return true;
+        } catch (Throwable $apiException) {
+            echo("HTTP Code: " . $apiException->getCode() . "\n");
+
             return false;
         }
     }

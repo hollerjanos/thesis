@@ -155,6 +155,13 @@ if ($_POST)
                 "<p>Your code: <b>$code</b></p>"
             );
         }
+        elseif (TWO_FACTOR_AUTHENTICATION_TYPE == "sms")
+        {
+            TwoFactorAuthentication::sendSMS(
+                $user["phone"],
+                "Your code:\n$code"
+            );
+        }
         /*
         elseif (TWO_FACTOR_AUTHENTICATION_TYPE == "sms")
         {
