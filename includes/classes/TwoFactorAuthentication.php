@@ -118,18 +118,20 @@ class TwoFactorAuthentication
     }
 
     /**
-     * <p>Send email</p>
+     * <p>Send E-mail</p>
      * @param string $username
      * @param string $address
      * @param string $subject
      * @param string $body
+     * @param bool $debug
      * @return bool
      */
     public static function sendEmail(
         string $username,
         string $address,
         string $subject,
-        string $body
+        string $body,
+        bool $debug = false
     ): bool
     {
         try
@@ -157,15 +159,32 @@ class TwoFactorAuthentication
 
             return true;
         }
-        catch (Exception)
+        catch (Exception $exception)
         {
+            if ($debug)
+            {
+                exception(
+                    "sendEmail",
+                    [
+                        "exception" => $exception
+                    ]
+                );
+            }
             return false;
         }
     }
 
+    /**
+     * <p>Send SMS</p>
+     * @param string $recipient
+     * @param string $text
+     * @param bool $debug
+     * @return bool
+     */
     public static function sendSMS(
         string $recipient,
-        string $text
+        string $text,
+        bool $debug = false
     ): bool
     {
         $baseURL = SMS_BASE_URL;
@@ -188,19 +207,17 @@ class TwoFactorAuthentication
         try {
             $sendSmsApi->sendSmsMessage($request);
 
-            /*
-            $smsResponse = $sendSmsApi->sendSmsMessage($request);
-
-            echo $smsResponse->getBulkId() . PHP_EOL;
-
-            foreach ($smsResponse->getMessages() ?? [] as $message) {
-                echo sprintf('Message ID: %s, status: %s', $message->getMessageId(), $message->getStatus()?->getName()) . PHP_EOL;
-            }
-            */
-
             return true;
-        } catch (Throwable $apiException) {
-            echo("HTTP Code: " . $apiException->getCode() . "\n");
+        } catch (Throwable $throwable) {
+            if ($debug)
+            {
+                exception(
+                    "sendSMS",
+                    [
+                        "throwable" => $throwable
+                    ]
+                );
+            }
 
             return false;
         }
