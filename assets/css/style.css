@@ -86,3 +86,7 @@ nav a {
 nav a:hover {
     background: rgb(224, 224, 224);
 }
+
+p.info {
+    text-align: center;
+}

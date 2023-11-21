@@ -28,7 +28,6 @@ require_once($_SERVER["DOCUMENT_ROOT"] . "/includes/functions.php");
 
 use PDO;
 use Exception;
-use PDOStatement;
 
 //==============================================================================
 // Process

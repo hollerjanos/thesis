@@ -28,7 +28,6 @@ require_once($_SERVER["DOCUMENT_ROOT"] . "/includes/classes/TwoFactorAuthenticat
 //==============================================================================
 
 use includes\classes\Database;
-use includes\classes\TwoFactorAuthentication;
 
 //==============================================================================
 // Session
@@ -174,9 +173,14 @@ require_once($_SERVER["DOCUMENT_ROOT"] . "/includes/navbar.php");
     </head>
     <body>
         <h1 class="title">Two-factor authentication</h1>
-    <?php if ($message["display"]) { ?>
+<?php if ($message["display"]) { ?>
         <p class="<?= $message["error"] ? "error" : "success" ?>"><?= $message["message"] ?></p>
-    <?php } ?>
+<?php } ?>
+<?php if (TWO_FACTOR_AUTHENTICATION_TYPE == "email") { ?>
+        <p class="info">We have emailed You. Please enter Your 6-digit code from the email!</p>
+<?php } elseif (TWO_FACTOR_AUTHENTICATION_TYPE == "sms") { ?>
+        <p class="info">We have sent an SMS to You. Please enter Your 6-digit code from the SMS!</p>
+<?php } ?>
         <form method="POST" action="<?= $_SERVER["PHP_SELF"] ?>">
             <table>
                 <tr class="fields">

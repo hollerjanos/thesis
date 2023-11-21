@@ -162,17 +162,6 @@ if ($_POST)
                 "Your code:\n$code"
             );
         }
-        /*
-        elseif (TWO_FACTOR_AUTHENTICATION_TYPE == "sms")
-        {
-            TwoFactorAuthentication::sendSMS(
-                $_POST["email"],
-                "Thesis - Two-factor authentication",
-                $code
-            );
-        }
-        */
-
 
         header("Location: /2fa.php");
         exit;
