@@ -2,6 +2,9 @@
 
 const FILENAME = location.pathname;
 
+const COLOR_NORMAL = "#FFFFFF";
+const COLOR_MISSING = "#FFBFBF";
+
 if (FILENAME == "/register.php")
 {
 	const USERNAME = document.getElementById("username");
@@ -18,27 +21,27 @@ if (FILENAME == "/register.php")
 		
 		if (USERNAME.value == "")
 		{
-			USERNAME.style.backgroundColor = "#FF0000";
+			USERNAME.style.backgroundColor = COLOR_MISSING;
 			console.error("Username is missing!");
 		}
 		if (PASSWORD.value == "")
 		{
-			PASSWORD.style.backgroundColor = "#FF0000";
+			PASSWORD.style.backgroundColor = COLOR_MISSING;
 			console.error("Password is missing!");
 		}
 		if (PASSWORD_CONFIRMATION.value == "")
 		{
-			PASSWORD_CONFIRMATION.style.backgroundColor = "#FF0000";
+			PASSWORD_CONFIRMATION.style.backgroundColor = COLOR_MISSING;
 			console.error("Password Confirmation is missing!");
 		}
 		if (EMAIL.value == "")
 		{
-			EMAIL.style.backgroundColor = "#FF0000";
+			EMAIL.style.backgroundColor = COLOR_MISSING;
 			console.error("Email is missing!");
 		}
 		if (PHONE.value == "")
 		{
-			PHONE.style.backgroundColor = "#FF0000";
+			PHONE.style.backgroundColor = COLOR_MISSING;
 			console.error("Phone is missing!");
 		}
 		
@@ -47,27 +50,27 @@ if (FILENAME == "/register.php")
 	
 	USERNAME.addEventListener("input", function ()
 	{
-		this.style.backgroundColor = "#FFFFFF";
+		this.style.backgroundColor = COLOR_NORMAL;
 	});
 	
 	PASSWORD.addEventListener("input", function ()
 	{
-		this.style.backgroundColor = "#FFFFFF";
+		this.style.backgroundColor = COLOR_NORMAL;
 	});
 	
 	PASSWORD_CONFIRMATION.addEventListener("input", function ()
 	{
-		this.style.backgroundColor = "#FFFFFF";
+		this.style.backgroundColor = COLOR_NORMAL;
 	});
 	
 	EMAIL.addEventListener("input", function ()
 	{
-		this.style.backgroundColor = "#FFFFFF";
+		this.style.backgroundColor = COLOR_NORMAL;
 	});
 	
 	PHONE.addEventListener("input", function ()
 	{
-		this.style.backgroundColor = "#FFFFFF";
+		this.style.backgroundColor = COLOR_NORMAL;
 	});
 	
 }
@@ -84,12 +87,12 @@ else if (FILENAME == "/login.php")
 		
 		if (USERNAME.value == "")
 		{
-			USERNAME.style.backgroundColor = "#FF0000";
+			USERNAME.style.backgroundColor = COLOR_MISSING;
 			console.error("Username is missing!");
 		}
 		if (PASSWORD.value == "")
 		{
-			PASSWORD.style.backgroundColor = "#FF0000";
+			PASSWORD.style.backgroundColor = COLOR_MISSING;
 			console.error("Password is missing!");
 		}
 		
@@ -98,11 +101,11 @@ else if (FILENAME == "/login.php")
 	
 	USERNAME.addEventListener("input", function ()
 	{
-		this.style.backgroundColor = "#FFFFFF";
+		this.style.backgroundColor = COLOR_NORMAL;
 	});
 	
 	PASSWORD.addEventListener("input", function ()
 	{
-		this.style.backgroundColor = "#FFFFFF";
+		this.style.backgroundColor = COLOR_NORMAL;
 	});
 }
